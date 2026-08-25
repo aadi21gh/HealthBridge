@@ -1,0 +1,116 @@
+[
+  {
+    "ruleId": "RF-CARDIO-001",
+    "name": "Chest Pain + Breathlessness + Sweating",
+    "description": "Potentially urgent cardiovascular symptom combination",
+    "conditions": [
+      { "field": "symptom", "operator": "contains", "value": "chest_pain" },
+      { "field": "symptom", "operator": "contains", "value": "breathlessness" },
+      { "field": "symptom", "operator": "contains", "value": "sweating" }
+    ],
+    "severity": "URGENT",
+    "messageKey": "urgent_chest_pain",
+    "messageFallback": "Your responses indicate symptoms that require prompt clinical evaluation. Please inform the clinical staff immediately.",
+    "recommendedAction": "Immediate clinician review recommended. Potentially urgent cardiovascular symptom combination.",
+    "version": 1,
+    "active": true,
+    "category": "cardiovascular"
+  },
+  {
+    "ruleId": "RF-CARDIO-002",
+    "name": "Chest Pain + High Severity",
+    "description": "Severe chest pain warrants urgent evaluation",
+    "conditions": [
+      { "field": "symptom", "operator": "contains", "value": "chest_pain" },
+      { "field": "severity", "operator": "gte", "value": 7 }
+    ],
+    "severity": "URGENT",
+    "messageKey": "urgent_chest_pain",
+    "messageFallback": "Your responses indicate symptoms that require prompt clinical evaluation.",
+    "recommendedAction": "Urgent clinician review recommended. Severe chest pain reported.",
+    "version": 1,
+    "active": true,
+    "category": "cardiovascular"
+  },
+  {
+    "ruleId": "RF-NEURO-001",
+    "name": "Severe Headache + Vision Changes + Neck Stiffness",
+    "description": "Potentially urgent neurological symptom combination",
+    "conditions": [
+      { "field": "chief_complaint_contains", "operator": "contains", "value": "headache" },
+      { "field": "severity", "operator": "gte", "value": 8 },
+      { "field": "symptom", "operator": "contains", "value": "dizziness" }
+    ],
+    "severity": "URGENT",
+    "messageKey": "urgent_neurological",
+    "messageFallback": "Your responses indicate symptoms that may require urgent neurological assessment.",
+    "recommendedAction": "Urgent neurological assessment recommended. Severe headache with associated symptoms.",
+    "version": 1,
+    "active": true,
+    "category": "neurological"
+  },
+  {
+    "ruleId": "RF-RESP-001",
+    "name": "Severe Breathlessness",
+    "description": "Severe difficulty breathing requires urgent evaluation",
+    "conditions": [
+      { "field": "symptom", "operator": "contains", "value": "breathlessness" },
+      { "field": "severity", "operator": "gte", "value": 8 }
+    ],
+    "severity": "URGENT",
+    "messageKey": "urgent_breathing",
+    "messageFallback": "Your breathing symptoms require prompt clinical evaluation.",
+    "recommendedAction": "Urgent respiratory assessment recommended. Severe breathlessness reported.",
+    "version": 1,
+    "active": true,
+    "category": "respiratory"
+  },
+  {
+    "ruleId": "RF-GI-001",
+    "name": "Severe Abdominal Pain + Vomiting",
+    "description": "Severe abdominal symptoms requiring evaluation",
+    "conditions": [
+      { "field": "chief_complaint_contains", "operator": "contains", "value": "abdom" },
+      { "field": "severity", "operator": "gte", "value": 7 },
+      { "field": "symptom", "operator": "contains", "value": "vomiting" }
+    ],
+    "severity": "ATTENTION",
+    "messageKey": "attention_abdominal",
+    "messageFallback": "Your abdominal symptoms require clinical evaluation.",
+    "recommendedAction": "Clinical evaluation recommended. Severe abdominal pain with vomiting.",
+    "version": 1,
+    "active": true,
+    "category": "gastrointestinal"
+  },
+  {
+    "ruleId": "RF-OBS-001",
+    "name": "Pregnancy + Severe Pain/Bleeding",
+    "description": "Symptoms during pregnancy requiring immediate attention",
+    "conditions": [
+      { "field": "pregnancy", "operator": "equals", "value": "pregnancy_yes" },
+      { "field": "severity", "operator": "gte", "value": 7 }
+    ],
+    "severity": "URGENT",
+    "messageKey": "urgent_pregnancy",
+    "messageFallback": "Your symptoms during pregnancy require immediate clinical attention.",
+    "recommendedAction": "Immediate obstetric review required. Severe symptoms reported during pregnancy.",
+    "version": 1,
+    "active": true,
+    "category": "obstetric"
+  },
+  {
+    "ruleId": "RF-GEN-001",
+    "name": "Very High Severity Any Complaint",
+    "description": "Any complaint rated 9-10 severity deserves prompt attention",
+    "conditions": [
+      { "field": "severity", "operator": "gte", "value": 9 }
+    ],
+    "severity": "ATTENTION",
+    "messageKey": "urgent_chest_pain",
+    "messageFallback": "Your symptoms are reported as very severe. The clinical staff will be notified.",
+    "recommendedAction": "Clinician review recommended. Very high severity complaint (9-10/10).",
+    "version": 1,
+    "active": true,
+    "category": "general"
+  }
+]
