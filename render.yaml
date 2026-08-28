@@ -12,7 +12,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGODB_URI
-        value: mongodb+srv://healthbridge:healthbridge4L@cluster0.faicsno.mongodb.net/healthbridge?retryWrites=true&w=majority&appName=Cluster0
+        sync: false
       - key: JWT_ACCESS_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET

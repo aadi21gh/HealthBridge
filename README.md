@@ -2,7 +2,9 @@
 
 **Unified, Patient-Controlled Longitudinal Health Record & Smart Clinical Intake Platform**
 
-HealthBridge is a modern, FHIR-compliant digital health platform built for the Indian healthcare ecosystem (aligned with the Ayushman Bharat Digital Mission — ABDM). It connects patients, doctors, and hospital kiosks into a single, secure, consent-driven network.
+HealthBridge is a modern, FHIR-compliant digital health platform built for the Indian healthcare ecosystem (aligned with the Ayushman Bharat Digital Mission — ABDM). It connects patients, doctors, and hospital kiosks into a single, secure, consent-driven network—powered by **Sarvam AI Indic Foundation Models** (Saaras ASR, Bulbul TTS, Sarvam-1 LLM & Sarvam Parse).
+
+> 🤖 **Sarvam Startup Program**: Read our full partnership proposal and technical integration plan in [SARVAM_STARTUP_PROGRAM.md](./SARVAM_STARTUP_PROGRAM.md).
 
 ---
 
