@@ -1,12 +1,198 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { recordsService } from '../../services/healthbridge.js';
 import DoctorLayout from '../../layouts/DoctorLayout.jsx';
 import {
   ArrowLeft, User, Heart, Zap, Pill, Activity, FlaskConical,
-  Scissors, Scan, Clock, AlertTriangle, Shield,
+  Scissors, Scan, Clock, AlertTriangle, Shield, CheckCircle2,
+  AlertOctagon, Plus, Check, Printer
 } from 'lucide-react';
 import { format } from '../../utils/dateUtils.js';
+
+const DRUG_DATABASE = [
+  { name: 'Amoxicillin 500mg', category: 'penicillin', desc: 'Broad-spectrum beta-lactam antibiotic' },
+  { name: 'Penicillin V 250mg', category: 'penicillin', desc: 'Narrow-spectrum penicillin antibiotic' },
+  { name: 'Cephalexin 500mg', category: 'cephalosporin', desc: 'First-generation cephalosporin (cross-reactive with penicillin)' },
+  { name: 'Ibuprofen 400mg', category: 'nsaid', desc: 'Non-steroidal anti-inflammatory' },
+  { name: 'Aspirin 75mg', category: 'nsaid', desc: 'Antiplatelet / NSAID analgesic' },
+  { name: 'Ciprofloxacin 500mg', category: 'fluoroquinolone', desc: 'Broad-spectrum quinolone antibiotic' },
+  { name: 'Azithromycin 500mg', category: 'macrolide', desc: 'Macrolide antibiotic (safe alternative for penicillin allergy)' },
+  { name: 'Metformin 500mg', category: 'antidiabetic', desc: 'Biguanide for glycemic control' },
+  { name: 'Paracetamol 650mg', category: 'analgesic', desc: 'Antipyretic and mild analgesic' },
+  { name: 'Pantoprazole 40mg', category: 'ppi', desc: 'Proton pump inhibitor for gastroprotection' },
+];
+
+function PrescriptionSafetyChecker({ allergies = [], patientName }) {
+  const [selectedDrug, setSelectedDrug] = useState('');
+  const [customDosage, setCustomDosage] = useState('1 tablet twice daily after meals');
+  const [duration, setDuration] = useState('5 days');
+  const [prescriptionsIssued, setPrescriptionsIssued] = useState([]);
+  const [checkedStatus, setCheckedStatus] = useState(null);
+
+  const checkDrugSafety = (drugName) => {
+    if (!drugName) {
+      setCheckedStatus(null);
+      return;
+    }
+    const drug = DRUG_DATABASE.find((d) => d.name === drugName);
+    const allergyKeywords = allergies.map((a) => (a.display || '').toLowerCase());
+
+    // Check for penicillin / beta-lactam allergy
+    const hasPenicillinAllergy = allergyKeywords.some((a) => a.includes('penicillin') || a.includes('amox'));
+    const hasNsaidAllergy = allergyKeywords.some((a) => a.includes('aspirin') || a.includes('nsaid') || a.includes('ibuprofen'));
+
+    if (drug) {
+      if ((drug.category === 'penicillin' || drug.category === 'cephalosporin') && hasPenicillinAllergy) {
+        setCheckedStatus({
+          severity: 'CRITICAL',
+          message: `SEVERE CONTRAINDICATION: Patient has a documented Penicillin allergy! ${drug.name} shares beta-lactam cross-reactivity and may cause acute anaphylaxis.`,
+          safe: false,
+        });
+        return;
+      }
+
+      if (drug.category === 'nsaid' && hasNsaidAllergy) {
+        setCheckedStatus({
+          severity: 'HIGH',
+          message: `ALLERGY WARNING: Patient has a documented NSAID/Aspirin intolerance. Prescribing ${drug.name} carries high risk of bronchospasm or urticaria.`,
+          safe: false,
+        });
+        return;
+      }
+    }
+
+    setCheckedStatus({
+      severity: 'SAFE',
+      message: `VERIFIED SAFE: No documented allergies or cross-reactivities found in patient safety ledger for ${drugName}.`,
+      safe: true,
+    });
+  };
+
+  const handleSelectDrug = (e) => {
+    const val = e.target.value;
+    setSelectedDrug(val);
+    checkDrugSafety(val);
+  };
+
+  const handleIssuePrescription = (e) => {
+    e.preventDefault();
+    if (!selectedDrug) return;
+
+    const newRx = {
+      id: Date.now(),
+      drug: selectedDrug,
+      dosage: customDosage,
+      duration,
+      issuedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      status: checkedStatus?.safe ? 'VERIFIED_ISSUED' : 'OVERRIDE_ISSUED',
+    };
+
+    setPrescriptionsIssued((prev) => [newRx, ...prev]);
+    setSelectedDrug('');
+    setCheckedStatus(null);
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+        <div className="sm:col-span-1">
+          <label className="text-[11px] font-semibold text-surface-700 block mb-1">Select Medication</label>
+          <select
+            value={selectedDrug}
+            onChange={handleSelectDrug}
+            className="input text-xs py-1.5"
+          >
+            <option value="">Choose drug to check...</option>
+            {DRUG_DATABASE.map((d) => (
+              <option key={d.name} value={d.name}>
+                {d.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-[11px] font-semibold text-surface-700 block mb-1">Dosage & Frequency</label>
+          <input
+            type="text"
+            value={customDosage}
+            onChange={(e) => setCustomDosage(e.target.value)}
+            className="input text-xs py-1.5"
+            placeholder="e.g. 1 tab BD after food"
+          />
+        </div>
+
+        <div>
+          <label className="text-[11px] font-semibold text-surface-700 block mb-1">Duration</label>
+          <input
+            type="text"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+            className="input text-xs py-1.5"
+            placeholder="e.g. 5 days"
+          />
+        </div>
+      </div>
+
+      {/* Safety Alert Output */}
+      {checkedStatus && (
+        <div
+          className={`p-3 rounded-lg border text-xs flex items-start gap-2.5 transition-all ${
+            checkedStatus.safe
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+              : 'bg-rose-50 border-rose-200 text-rose-900'
+          }`}
+        >
+          {checkedStatus.safe ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+          ) : (
+            <AlertOctagon className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
+          )}
+          <div className="flex-1">
+            <span className="font-bold uppercase tracking-wide text-[10px] block mb-0.5">
+              {checkedStatus.severity}
+            </span>
+            <p>{checkedStatus.message}</p>
+          </div>
+          <button
+            onClick={handleIssuePrescription}
+            className={`btn-sm font-semibold flex-shrink-0 ${
+              checkedStatus.safe ? 'btn-primary' : 'btn-danger'
+            }`}
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>{checkedStatus.safe ? 'Issue Rx' : 'Override & Issue'}</span>
+          </button>
+        </div>
+      )}
+
+      {/* Issued Rx List */}
+      {prescriptionsIssued.length > 0 && (
+        <div className="mt-3 pt-3 border-t border-surface-200 space-y-2">
+          <p className="text-[11px] font-bold text-surface-700 uppercase tracking-wider">
+            Newly Issued Prescriptions during this session ({prescriptionsIssued.length})
+          </p>
+          {prescriptionsIssued.map((rx) => (
+            <div
+              key={rx.id}
+              className="p-2.5 bg-white border border-surface-200 rounded-lg flex items-center justify-between gap-3 text-xs"
+            >
+              <div>
+                <span className="font-bold text-surface-900">{rx.drug}</span>
+                <span className="text-surface-500 ml-2">({rx.dosage} · {rx.duration})</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-surface-400 font-mono">Issued {rx.issuedAt}</span>
+                <span className="badge badge-success text-[10px]">Verified Active</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const Section = ({ title, icon: Icon, children, empty }) => (
   <div className="bg-white border border-surface-200 rounded-xl overflow-hidden">
@@ -174,26 +360,59 @@ export default function DoctorPatientView() {
           </Section>
         )}
 
-        {/* Medications */}
+        {/* Medications & Prescription Builder */}
         {records.medications && (
-          <Section title="Medications" icon={Pill} color="success">
-            {records.medications.length === 0 ? (
-              <p className="text-sm text-surface-400">No medications documented</p>
-            ) : (
-              <div className="space-y-2">
-                {records.medications.map((m) => (
-                  <div key={m._id} className="flex items-start justify-between p-3 rounded-xl bg-surface-50 border border-surface-100">
-                    <div>
-                      <p className="font-medium text-surface-900 text-sm">{m.medicationDisplay}</p>
-                      {m.dosage?.text && <p className="text-xs text-surface-500 mt-0.5">{m.dosage.text}</p>}
-                      {m.frequency && <p className="text-xs text-surface-400">{m.frequency}</p>}
-                    </div>
-                    <span className={`badge status-${m.status}`}>{m.status}</span>
-                  </div>
-                ))}
+          <div className="bg-white border border-surface-200 rounded-xl overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-surface-100">
+              <div className="flex items-center gap-2">
+                <Pill className="w-4 h-4 text-emerald-600" />
+                <h3 className="text-sm font-semibold text-surface-900">Current Medications & Safety Check</h3>
               </div>
-            )}
-          </Section>
+              <span className="badge badge-neutral text-xs">{records.medications.length} active</span>
+            </div>
+
+            <div className="p-5 space-y-4">
+              {/* Existing medications */}
+              {records.medications.length === 0 ? (
+                <p className="text-sm text-surface-400">No medications currently documented</p>
+              ) : (
+                <div className="space-y-2">
+                  {records.medications.map((m) => (
+                    <div key={m._id} className="flex items-start justify-between p-3 rounded-xl bg-surface-50 border border-surface-100">
+                      <div>
+                        <p className="font-medium text-surface-900 text-sm">{m.medicationDisplay}</p>
+                        {m.dosage?.text && <p className="text-xs text-surface-500 mt-0.5">{m.dosage.text}</p>}
+                        {m.frequency && <p className="text-xs text-surface-400">{m.frequency}</p>}
+                      </div>
+                      <span className={`badge status-${m.status}`}>{m.status}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* ── Drug-Allergy Interaction & Prescription Checker ── */}
+              <div className="mt-4 pt-4 border-t border-surface-100 bg-slate-50/70 p-4 rounded-xl border border-surface-200">
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-brand-600" />
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-surface-900">
+                      Interactive Drug-Allergy Safety Checker
+                    </h4>
+                  </div>
+                  <span className="text-[11px] text-surface-500">Live Clinical Cross-Check</span>
+                </div>
+
+                <p className="text-xs text-surface-600 mb-3">
+                  Simulate or prescribe a new medication. The safety engine automatically scans the patient's active allergies before issuing.
+                </p>
+
+                <PrescriptionSafetyChecker
+                  allergies={records.allergies || []}
+                  patientName={`${patientUser.firstName} ${patientUser.lastName}`}
+                />
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Procedures */}

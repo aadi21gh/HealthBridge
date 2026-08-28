@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { patientService } from '../../services/healthbridge.js';
 import PatientLayout from '../../layouts/PatientLayout.jsx';
 import {
   Pill, AlertTriangle, FileText, Clock, Shield, Activity,
-  Calendar, ChevronRight,
+  Calendar, ChevronRight, Landmark, QrCode, X, Sparkles,
+  HeartPulse, ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format } from '../../utils/dateUtils.js';
@@ -26,6 +28,7 @@ const encounterLabel = (type) => {
 
 export default function PatientDashboard() {
   const { user } = useAuth();
+  const [showAbhaModal, setShowAbhaModal] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ['patient-summary'],
@@ -76,7 +79,16 @@ export default function PatientDashboard() {
                 <p className="text-sm font-medium text-surface-700">{patient.emergencyContact?.name || '—'}</p>
               </div>
               <div className="pl-4">
-                <p className="meta-label mb-1">ABHA ID</p>
+                <div className="flex items-center justify-between mb-1">
+                  <p className="meta-label">ABHA ID</p>
+                  <button
+                    onClick={() => setShowAbhaModal(true)}
+                    className="text-[11px] text-brand-600 hover:text-brand-800 font-semibold inline-flex items-center gap-1"
+                  >
+                    <QrCode className="w-3 h-3" />
+                    <span>Card</span>
+                  </button>
+                </div>
                 <p className="text-sm font-medium text-surface-700">{patient.abhaId || (
                   <Link to="/patient/profile" className="text-brand-600 text-xs hover:underline">Link ABHA</Link>
                 )}</p>
@@ -200,6 +212,13 @@ export default function PatientDashboard() {
                 <h3 className="text-sm font-semibold text-surface-900">Quick Access</h3>
               </div>
               <div className="divide-y divide-surface-100">
+                <Link to="/patient/schemes" className="flex items-center justify-between px-4 py-3 hover:bg-surface-50 transition-colors group text-sm text-surface-700">
+                  <div className="flex items-center gap-2">
+                    <Landmark className="w-4 h-4 text-brand-600" />
+                    Govt. Health Schemes
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-surface-300" />
+                </Link>
                 <Link to="/patient/consents" className="flex items-center justify-between px-4 py-3 hover:bg-surface-50 transition-colors group text-sm text-surface-700">
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-surface-400" />
@@ -225,6 +244,89 @@ export default function PatientDashboard() {
             </div>
           </div>
         </div>
+        {/* ── ABHA Digital Card & QR "Scan & Share" Modal ───────── */}
+        {showAbhaModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white border border-surface-200 rounded-2xl max-w-sm w-full shadow-2xl overflow-hidden animate-fade-in">
+              {/* Card Header Bar */}
+              <div className="p-4 bg-gradient-to-r from-brand-900 via-brand-800 to-slate-900 text-white flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded bg-white/10 flex items-center justify-center">
+                    <HeartPulse className="w-4 h-4 text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold leading-tight">National Digital Health Card</p>
+                    <p className="text-[10px] text-brand-200">Ayushman Bharat (ABDM)</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowAbhaModal(false)}
+                  className="p-1 rounded text-white/70 hover:text-white hover:bg-white/10"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Digital Card Body */}
+              <div className="p-5 space-y-4 text-center">
+                {/* Simulated QR Code */}
+                <div className="bg-surface-50 border-2 border-dashed border-brand-300 rounded-xl p-4 flex flex-col items-center justify-center space-y-2">
+                  <div className="w-36 h-36 bg-white border border-surface-200 rounded-lg p-2 flex flex-col items-center justify-center shadow-inner">
+                    <div className="grid grid-cols-6 gap-1 w-full h-full p-1 opacity-80">
+                      {[...Array(36)].map((_, i) => (
+                        <div
+                          key={i}
+                          className={`rounded-xs ${
+                            (i % 2 === 0 && i % 3 === 0) || i === 0 || i === 5 || i === 30 || i === 35
+                              ? 'bg-slate-900'
+                              : i % 5 === 0
+                              ? 'bg-brand-600'
+                              : 'bg-slate-200'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-brand-700">
+                    <QrCode className="w-3.5 h-3.5" />
+                    <span>Scan & Share at OPD Kiosk</span>
+                  </div>
+                </div>
+
+                {/* Patient Identity */}
+                <div className="text-left space-y-1.5 border-t border-surface-100 pt-3 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-surface-400">Name:</span>
+                    <span className="font-bold text-surface-900">{user?.firstName} {user?.lastName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-surface-400">ABHA Number:</span>
+                    <span className="font-mono font-bold text-brand-700">{patient?.abhaId || '91-4820-1923-8841'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-surface-400">ABHA Address:</span>
+                    <span className="font-mono text-surface-700">{(user?.firstName || 'arjun').toLowerCase()}.{(user?.lastName || 'kumar').toLowerCase()}@abdm</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-surface-400">Blood Group:</span>
+                    <span className="font-bold text-surface-900">{patient?.bloodGroup || 'O+'}</span>
+                  </div>
+                </div>
+
+                {/* Action CTA */}
+                <div className="pt-2">
+                  <Link
+                    to="/kiosk"
+                    className="btn-primary w-full btn-sm flex items-center justify-center gap-1.5"
+                  >
+                    <span>Simulate OPD Check-In with this Card</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </PatientLayout>
   );

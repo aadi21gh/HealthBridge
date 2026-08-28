@@ -129,6 +129,16 @@ npm run dev
 
 ---
 
+## 🌐 Deploy to the Cloud (Live Website)
+
+HealthBridge is ready for 1-click cloud deployment. See the full [Deployment Guide (DEPLOYMENT.md)](./DEPLOYMENT.md) for step-by-step instructions.
+
+* **Render (1-Click Blueprint)**: Uses `render.yaml` to deploy both the React frontend and Express backend together on the free tier with zero CORS configuration.
+* **Railway / Fly.io / VPS**: Full support for Docker Compose or standard Node.js runtime.
+* **Vercel**: Pre-configured `vercel.json` for frontend CDN hosting.
+
+---
+
 ## 🔑 Demo Accounts & Test Credentials
 
 All demo accounts use the standard password: **`Demo@1234`**

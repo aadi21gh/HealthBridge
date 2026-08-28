@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HealthBridge — Presentation Deck</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #60a5fa;
+      --accent: #0ea5e9;
+      --bg-dark: #090d16;
+      --bg-surface: #0f172a;
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --border: rgba(255, 255, 255, 0.1);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #ef4444;
+      --purple: #8b5cf6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Ambient Background Glows */
+    .ambient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .ambient-glow-1 {
+      position: absolute;
+      top: -15%;
+      left: -10%;
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.18) 0%, rgba(37, 99, 235, 0) 70%);
+      filter: blur(60px);
+    }
+    .ambient-glow-2 {
+      position: absolute;
+      bottom: -15%;
+      right: -10%;
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, rgba(14, 165, 233, 0) 70%);
+      filter: blur(60px);
+    }
+
+    /* Header & Controls */
+    header {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .brand-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      color: var(--primary-light);
+      border-radius: 999px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: rgba(30, 41, 59, 0.6);
+      color: var(--text-main);
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: rgba(51, 65, 85, 0.8);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Main Deck Container */
+    main {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 2rem;
+      overflow: hidden;
+    }
+
+    .slide-wrapper {
+      width: 100%;
+      max-width: 1200px;
+      height: 100%;
+      max-height: 720px;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      opacity: 0;
+      transform: scale(0.98);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Slide Typography & Elements */
+    .slide-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .slide-title {
+      font-size: 2.3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-weight: 400;
+      max-width: 900px;
+    }
+
+    /* Slide Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(37, 99, 235, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: #fff;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .card-list {
+      list-style: none;
+      margin-top: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .card-list li {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .card-list li i {
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Workflow Diagram Box */
+    .flow-box {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      border-radius: 14px;
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .flow-step {
+      flex: 1;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .flow-arrow {
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+
+    /* Table Styles */
+    .table-container {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: rgba(30, 41, 59, 0.8);
+      color: var(--text-main);
+      padding: 0.85rem 1.2rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0.85rem 1.2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Footer & Navigation Controls */
+    footer {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 2rem;
+      border-top: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .slide-progress {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .progress-bar-container {
+      width: 180px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 8.33%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .slide-counter {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Speaker Notes Modal */
+    .notes-drawer {
+      position: fixed;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      width: calc(100% - 4rem);
+      max-width: 900px;
+      background: #0f172a;
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      border-radius: 14px;
+      padding: 1.25rem 1.75rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      z-index: 100;
+      display: none;
+      opacity: 0;
+      transition: all 0.25s ease;
+    }
+
+    .notes-drawer.open {
+      display: block;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .notes-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .notes-content {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      font-style: italic;
+    }
+
+    /* Print / PDF Mode */
+    @media print {
+      body {
+        overflow: visible;
+        height: auto;
+        background: #fff;
+        color: #000;
+      }
+      header, footer, .ambient-bg, .notes-drawer {
+        display: none !important;
+      }
+      .slide-wrapper {
+        max-width: 100%;
+        height: auto;
+      }
+      .slide {
+        display: flex !important;
+        opacity: 1 !important;
+        position: relative !important;
+        page-break-after: always;
+        break-after: page;
+        border: 1px solid #ddd;
+        background: #fff;
+        color: #000;
+        margin-bottom: 2rem;
+        box-shadow: none;
+      }
+      .slide-title {
+        color: #000;
+        background: none;
+        -webkit-text-fill-color: initial;
+      }
+      .card {
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        color: #000;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Backdrop -->
+  <div class="ambient-bg">
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+  </div>
+
+  <!-- Header Bar -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">
+        <i data-lucide="activity"></i>
+      </div>
+      <span>HealthBridge</span>
+      <span class="brand-badge">ABDM & FHIR Compliant</span>
+    </div>
+    <div class="top-actions">
+      <button class="btn" id="btn-notes" onclick="toggleNotes()">
+        <i data-lucide="message-square"></i>
+        <span>Speaker Script [S]</span>
+      </button>
+      <button class="btn" onclick="toggleFullscreen()">
+        <i data-lucide="maximize"></i>
+        <span>Fullscreen [F]</span>
+      </button>
+      <button class="btn btn-primary" onclick="window.print()">
+        <i data-lucide="printer"></i>
+        <span>Print / Save PDF</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Slide Viewport -->
+  <main>
+    <div class="slide-wrapper">
+
+      <!-- SLIDE 1: Title -->
+      <div class="slide active" data-slide="1" data-notes="Good morning/afternoon everyone. Today, we are proud to introduce HealthBridge — a modern, FHIR-compliant digital health platform built specifically for the Indian healthcare ecosystem. HealthBridge solves two of the largest bottlenecks in healthcare today: fragmented medical records and overcrowded OPD waiting rooms. By putting patients in full control of their data and automating pre-consultation intake at the hospital kiosk, HealthBridge bridges the gap between patients and doctors seamlessly.">
+        <div style="text-align: center; max-width: 850px; margin: 0 auto;">
+          <div class="slide-tag">
+            <i data-lucide="shield-check"></i>
+            <span>Indian Digital Healthcare Platform</span>
+          </div>
+          <h1 class="slide-title" style="font-size: 3.4rem; margin-bottom: 1rem;">HealthBridge 🏥</h1>
+          <p class="slide-subtitle" style="font-size: 1.35rem; margin: 0 auto 2.5rem auto; color: #cbd5e1;">
+            Unified, Patient-Controlled Longitudinal Health Record & Smart Clinical Intake Platform
+          </p>
+          
+          <div class="grid-3" style="text-align: left;">
+            <div class="card" style="border-top: 3px solid var(--primary);">
+              <div class="card-icon" style="background: rgba(37, 99, 235, 0.2); color: var(--primary-light);"><i data-lucide="user-check"></i></div>
+              <div class="card-title">Patient Ownership</div>
+              <div class="card-desc">ABDM-aligned consent gateway giving patients 100% control over medical records.</div>
+            </div>
+            <div class="card" style="border-top: 3px solid var(--emerald);">
+              <div class="card-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--emerald);"><i data-lucide="mic"></i></div>
+              <div class="card-title">Smart Kiosk Intake</div>
+              <div class="card-desc">Multilingual voice & touch intake at OPD waiting rooms with OCR prescription scanning.</div>
+            </div>
+            <div class="card" style="border-top: 3px solid var(--amber);">
+              <div class="card-icon" style="background: rgba(245, 158, 11, 0.2); color: var(--amber);"><i data-lucide="zap"></i></div>
+              <div class="card-title">Clinical Workspace</div>
+              <div class="card-desc">Intelligent briefings, verified symptom facts, allergy safety & emergency break-glass.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: Problem Statement -->
+      <div class="slide" data-slide="2" data-notes="In India, when a patient visits a new hospital, they carry bulky paper files or struggle to recall past prescriptions, surgeries, and drug allergies. Doctors are forced to spend valuable consultation minutes transcribing routine details rather than diagnosing. Critical allergies are missed, redundant lab tests are ordered, and in emergency trauma rooms, doctors fly blind. HealthBridge was built to eliminate these exact pain points.">
+        <div class="slide-tag"><i data-lucide="alert-circle"></i> The Healthcare Challenge</div>
+        <h2 class="slide-title">Fragmented Data & Congested OPDs</h2>
+        <p class="slide-subtitle">Traditional healthcare delivery in India suffers from three systemic bottlenecks.</p>
+
+        <div class="grid-3">
+          <div class="card" style="border-left: 4px solid var(--rose);">
+            <div class="card-icon" style="background: rgba(239, 68, 68, 0.15); color: var(--rose);"><i data-lucide="file-x"></i></div>
+            <h3 class="card-title">Siloed & Lost Records</h3>
+            <p class="card-desc">Health records are trapped in disparate hospitals, paper folders, and diagnostic clinics.</p>
+            <ul class="card-list">
+              <li><i data-lucide="chevron-right"></i> Redundant & expensive re-testing</li>
+              <li><i data-lucide="chevron-right"></i> Missed past surgeries and allergies</li>
+              <li><i data-lucide="chevron-right"></i> Blind spots in emergency care</li>
+            </ul>
+          </div>
+
+          <div class="card" style="border-left: 4px solid var(--amber);">
+            <div class="card-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--amber);"><i data-lucide="clock"></i></div>
+            <h3 class="card-title">OPD Queue Congestion</h3>
+            <p class="card-desc">Consultation time is consumed by routine administrative data entry rather than care.</p>
+            <ul class="card-list">
+              <li><i data-lucide="chevron-right"></i> 40% time spent transcribing history</li>
+              <li><i data-lucide="chevron-right"></i> Long waiting lines for patients</li>
+              <li><i data-lucide="chevron-right"></i> No pre-triaging of high-risk red flags</li>
+            </ul>
+          </div>
+
+          <div class="card" style="border-left: 4px solid var(--purple);">
+            <div class="card-icon" style="background: rgba(139, 92, 246, 0.15); color: var(--purple);"><i data-lucide="lock"></i></div>
+            <h3 class="card-title">Zero Patient Consent</h3>
+            <p class="card-desc">Legacy electronic health systems lack patient privacy controls and audit accountability.</p>
+            <ul class="card-list">
+              <li><i data-lucide="chevron-right"></i> Data shared without patient approval</li>
+              <li><i data-lucide="chevron-right"></i> No time-bounded permissions</li>
+              <li><i data-lucide="chevron-right"></i> Absence of tamper-proof audit trails</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 3: The Solution -->
+      <div class="slide" data-slide="3" data-notes="HealthBridge is built on three core pillars: First, true patient ownership — all health data belongs to the patient, not isolated silos. Second, a consent-first architecture aligned with ABDM where doctors must request permission for specific record types and timeframes. Third, smart pre-consultation intake where OPD kiosks capture vitals, symptoms, and scanned papers, generating an AI-assisted clinical briefing for the doctor in seconds.">
+        <div class="slide-tag"><i data-lucide="sparkles"></i> The HealthBridge Approach</div>
+        <h2 class="slide-title">The 3 Core Pillars of HealthBridge</h2>
+        <p class="slide-subtitle">A synchronized ecosystem connecting patients, clinical staff, and hospital terminals.</p>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon" style="background: rgba(37, 99, 235, 0.2); color: var(--primary-light);"><i data-lucide="folder-heart"></i></div>
+            <h3 class="card-title">1. Patient-Owned Records</h3>
+            <p class="card-desc">Unified, lifelong medical timeline containing every diagnosis, prescription, lab observation, and discharge summary.</p>
+            <ul class="card-list">
+              <li><i data-lucide="check"></i> Lifelong longitudinal chart</li>
+              <li><i data-lucide="check"></i> FHIR R4 structured data</li>
+              <li><i data-lucide="check"></i> Critical allergy safety ledger</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--emerald);"><i data-lucide="key"></i></div>
+            <h3 class="card-title">2. Consent-First ABDM Engine</h3>
+            <p class="card-desc">Zero-knowledge access model where doctors must request explicit patient approval for specific records and durations.</p>
+            <ul class="card-list">
+              <li><i data-lucide="check"></i> Granular scope selection</li>
+              <li><i data-lucide="check"></i> Time-bound access (1hr to 7d)</li>
+              <li><i data-lucide="check"></i> 1-click revocation & audit log</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(14, 165, 233, 0.2); color: var(--accent);"><i data-lucide="tablet"></i></div>
+            <h3 class="card-title">3. Smart Multilingual Kiosk</h3>
+            <p class="card-desc">Touchscreen & voice intake terminal located at OPD waiting zones that prepares doctors before consultation.</p>
+            <ul class="card-list">
+              <li><i data-lucide="check"></i> Trilingual: English, हिंदी, मराठी</li>
+              <li><i data-lucide="check"></i> OCR document digitizer</li>
+              <li><i data-lucide="check"></i> Automated red-flag detection</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 4: Architecture Flow -->
+      <div class="slide" data-slide="4" data-notes="Here is the workflow in action: As a patient arrives at the OPD, they interact with the kiosk in their native language — English, Hindi, or Marathi. They dictate or tap their symptoms and scan past reports. The system securely prepares an intake summary. Concurrently, the doctor sends a consent request which the patient approves on their phone. The doctor's workstation immediately unlocks verified longitudinal history alongside AI-triaged red flags.">
+        <div class="slide-tag"><i data-lucide="cpu"></i> System Architecture</div>
+        <h2 class="slide-title">End-to-End Clinical & Consent Flow</h2>
+        <p class="slide-subtitle">How data seamlessly moves from patient intake to doctor consultation.</p>
+
+        <div class="flow-box">
+          <div class="flow-step">
+            <div style="color: var(--accent); font-weight: 700; margin-bottom: 0.3rem;"><i data-lucide="tablet"></i> OPD Kiosk</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Voice/Touch Intake, OCR Paper Upload & Red-Flag Triage</div>
+          </div>
+          <div class="flow-arrow"><i data-lucide="arrow-right"></i></div>
+          <div class="flow-step" style="border-color: rgba(37, 99, 235, 0.6); background: rgba(37, 99, 235, 0.15);">
+            <div style="color: #60a5fa; font-weight: 700; margin-bottom: 0.3rem;"><i data-lucide="shield"></i> Consent Gate</div>
+            <div style="font-size: 0.8rem; color: #cbd5e1;">ABDM Engine verifies patient approval & time validity</div>
+          </div>
+          <div class="flow-arrow"><i data-lucide="arrow-right"></i></div>
+          <div class="flow-step">
+            <div style="color: var(--emerald); font-weight: 700; margin-bottom: 0.3rem;"><i data-lucide="stethoscope"></i> Doctor Workspace</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Interactive Fact Verification, Timeline & Prescriptions</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top: 1.5rem;">
+          <div class="card">
+            <h4 class="card-title" style="color: var(--accent);"><i data-lucide="layers"></i> Data Interoperability</h4>
+            <p class="card-desc">Built strictly using HL7 FHIR R4 structured concepts for encounters, observations, conditions, and diagnostic reports.</p>
+          </div>
+          <div class="card">
+            <h4 class="card-title" style="color: var(--emerald);"><i data-lucide="lock"></i> Zero-Knowledge Access Enforcement</h4>
+            <p class="card-desc">Database access middleware validates active, non-expired consent before fulfilling any patient record query.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 5: Patient Portal -->
+      <div class="slide" data-slide="5" data-notes="On the Patient Portal, patients have total transparency. They can inspect their lifelong health timeline, review active prescriptions, and manage consent in real-time. If Dr. Mehta requests 24-hour access to Diagnostic Reports, the patient can grant or revoke it instantly. Furthermore, every single access event is permanently recorded in the access history ledger.">
+        <div class="slide-tag"><i data-lucide="user"></i> Patient Experience</div>
+        <h2 class="slide-title">Patient Portal (`/patient/*`)</h2>
+        <p class="slide-subtitle">Empowering patients with transparent records, granular consents, and safety tracking.</p>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-icon" style="background: rgba(37, 99, 235, 0.2); color: var(--primary-light);"><i data-lucide="clock"></i></div>
+            <h3 class="card-title">Longitudinal Timeline & Records</h3>
+            <ul class="card-list">
+              <li><i data-lucide="check-circle-2"></i> <strong>Unified Medical History:</strong> Chronological record of visits, diagnoses, and lab results across all hospitals.</li>
+              <li><i data-lucide="check-circle-2"></i> <strong>Document Vault:</strong> Download and view original lab reports, imaging scans, and discharge papers.</li>
+              <li><i data-lucide="check-circle-2"></i> <strong>Active Prescriptions:</strong> Daily dosage schedule, refills, and prescribing doctor info.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--emerald);"><i data-lucide="shield-alert"></i></div>
+            <h3 class="card-title">Consent Manager & Audit Ledger</h3>
+            <ul class="card-list">
+              <li><i data-lucide="check-circle-2"></i> <strong>Live Consent Dashboard:</strong> Approve incoming requests, set scopes (e.g. Labs Only), or revoke with 1 click.</li>
+              <li><i data-lucide="check-circle-2"></i> <strong>Allergies & Intolerances:</strong> Critical drug, food, and environmental allergy safety alerts.</li>
+              <li><i data-lucide="check-circle-2"></i> <strong>Permanent Audit Trail:</strong> See every doctor view, emergency break-glass, and data download.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 6: Doctor Portal -->
+      <div class="slide" data-slide="6" data-notes="For doctors, HealthBridge is a massive productivity and safety booster. Instead of starting from scratch, the doctor opens the patient's Clinical Chart and sees a verified intake briefing. High-risk symptoms are highlighted with red-flag badges, scanned physical slips are transcribed with OCR, and critical drug allergies are impossible to miss.">
+        <div class="slide-tag"><i data-lucide="stethoscope"></i> Clinical Efficiency</div>
+        <h2 class="slide-title">Doctor Portal (`/doctor/*`)</h2>
+        <p class="slide-subtitle">Actionable longitudinal charting, AI fact verification, and urgent red-flag alerts.</p>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon" style="background: rgba(37, 99, 235, 0.2); color: var(--primary-light);"><i data-lucide="clipboard-list"></i></div>
+            <h3 class="card-title">Patient Clinical Chart</h3>
+            <p class="card-desc">Top identity strip, critical allergy warning banner, vitals history, and filterable medical record timeline.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(239, 68, 68, 0.2); color: var(--rose);"><i data-lucide="file-check-2"></i></div>
+            <h3 class="card-title">Intake Fact Verification</h3>
+            <p class="card-desc">Interactive review: Doctors can confirm, edit, or reject AI-extracted symptoms captured during kiosk check-in.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(245, 158, 11, 0.2); color: var(--amber);"><i data-lucide="scan-line"></i></div>
+            <h3 class="card-title">Document OCR Viewer</h3>
+            <p class="card-desc">Instant transcription of physical paper slips, handwritten notes, and previous lab test reports.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 7: Touchscreen Kiosk -->
+      <div class="slide" data-slide="7" data-notes="The OPD Touchscreen Kiosk is designed for maximum accessibility, including patients with low digital literacy. With full voice synthesis and speech recognition in multiple Indian languages, patients can simply speak their complaints. When the session finishes, the terminal automatically purges all local cache, ensuring 100% data privacy.">
+        <div class="slide-tag"><i data-lucide="touchpad"></i> OPD Transformation</div>
+        <h2 class="slide-title">Touchscreen Kiosk Intake (`/kiosk`)</h2>
+        <p class="slide-subtitle">Accessible pre-consultation triaging designed for Indian hospital waiting rooms.</p>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-icon" style="background: rgba(14, 165, 233, 0.2); color: var(--accent);"><i data-lucide="languages"></i></div>
+            <h3 class="card-title">Multilingual Voice & Touch</h3>
+            <ul class="card-list">
+              <li><i data-lucide="check"></i> Available in <strong>English, Hindi (हिंदी), and Marathi (मराठी)</strong>.</li>
+              <li><i data-lucide="check"></i> <strong>Voice Dictation:</strong> Text-to-Speech audio guidance & Speech-to-Text input.</li>
+              <li><i data-lucide="check"></i> <strong>Visual Pain Scale:</strong> 1–10 interactive pain severity rating & body map.</li>
+              <li><i data-lucide="check"></i> <strong>Dual Pathways:</strong> Modern Medicine & AYUSH intake paths.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--emerald);"><i data-lucide="camera"></i></div>
+            <h3 class="card-title">OCR Scanning & Privacy Purge</h3>
+            <ul class="card-list">
+              <li><i data-lucide="check"></i> <strong>Paper Slip Digitizer:</strong> Patients scan past prescriptions & diagnostic labs.</li>
+              <li><i data-lucide="check"></i> <strong>Red-Flag Engine:</strong> Auto-flags acute symptoms (e.g. chest pain, severe fever).</li>
+              <li><i data-lucide="check"></i> <strong>Privacy Auto-Purge:</strong> Terminal automatically clears memory after countdown.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 8: Admin & Fleet Management -->
+      <div class="slide" data-slide="8" data-notes="For hospital administrators and IT directors, HealthBridge includes a Fleet Management console. Administrators can monitor every kiosk across multiple hospital wings in real-time, view throughput metrics, analyze red-flag trends, and provision new kiosk terminals securely.">
+        <div class="slide-tag"><i data-lucide="network"></i> Fleet Operations</div>
+        <h2 class="slide-title">Hospital Fleet Administration (`/admin/kiosks`)</h2>
+        <p class="slide-subtitle">Centralized terminal health monitoring, throughput metrics, and device provisioning.</p>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon" style="background: rgba(37, 99, 235, 0.2); color: var(--primary-light);"><i data-lucide="monitor-check"></i></div>
+            <h3 class="card-title">Terminal Registry</h3>
+            <p class="card-desc">Real-time status tracking (`ONLINE`, `DISABLED`), IP address, software build version, and heartbeat ping monitoring.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--emerald);"><i data-lucide="bar-chart-3"></i></div>
+            <h3 class="card-title">Throughput Analytics</h3>
+            <p class="card-desc">Track total daily intake sessions, average check-in duration (2.8 mins), and OPD peak-hour traffic trends.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(139, 92, 246, 0.2); color: var(--purple);"><i data-lucide="shield-check"></i></div>
+            <h3 class="card-title">Hardware Provisioning</h3>
+            <p class="card-desc">Generate secure hardware cryptographic tokens for onboarding newly installed hospital terminal units.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 9: Break Glass Access -->
+      <div class="slide" data-slide="9" data-notes="One of the toughest challenges in consent-based healthcare is emergencies. If an unconscious patient arrives at the trauma center, strict consent cannot become a roadblock to saving a life. HealthBridge solves this with 'Break-Glass Access': the doctor provides a mandatory clinical justification, records are unlocked immediately, and an unalterable high-priority audit event is logged permanently.">
+        <div class="slide-tag" style="color: var(--rose);"><i data-lucide="alert-triangle"></i> Life-Saving Protocol</div>
+        <h2 class="slide-title">Emergency "Break-Glass" Access</h2>
+        <p class="slide-subtitle">Emergency override protocol balancing immediate clinical care with complete auditability.</p>
+
+        <div class="grid-2">
+          <div class="card" style="border: 1px solid rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.05);">
+            <h3 class="card-title" style="color: var(--rose);"><i data-lucide="flame"></i> The ER Trauma Dilemma</h3>
+            <p class="card-desc">When an unconscious patient arrives with acute trauma, they cannot provide digital consent on a phone. Denying access could be fatal.</p>
+            <ul class="card-list" style="margin-top: 1rem;">
+              <li><i data-lucide="alert-circle" style="color: var(--rose);"></i> Needs immediate blood group & drug allergy check</li>
+              <li><i data-lucide="alert-circle" style="color: var(--rose);"></i> Needs prior surgical and cardiac history</li>
+            </ul>
+          </div>
+
+          <div class="card" style="border: 1px solid rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.05);">
+            <h3 class="card-title" style="color: var(--emerald);"><i data-lucide="shield-check"></i> The HealthBridge Resolution</h3>
+            <p class="card-desc">Doctor can bypass standard consent by providing mandatory clinical justification (e.g. *"Acute Trauma ER — Patient unconscious"*).</p>
+            <ul class="card-list" style="margin-top: 1rem;">
+              <li><i data-lucide="check-circle" style="color: var(--emerald);"></i> Instant unlocking of life-saving medical chart</li>
+              <li><i data-lucide="check-circle" style="color: var(--emerald);"></i> Immutable high-priority audit event generated immediately</li>
+              <li><i data-lucide="check-circle" style="color: var(--emerald);"></i> Push notification & permanent record in patient's portal</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 10: Tech Stack -->
+      <div class="slide" data-slide="10" data-notes="HealthBridge is built on a resilient, modern tech stack. We use React 18 with Vite for a sub-second reactive frontend, paired with Node.js and MongoDB. Security is baked in from day one: Argon2id password hashing, JWTs with HTTP-only sliding refresh tokens, and rate-limiting to prevent brute force attacks.">
+        <div class="slide-tag"><i data-lucide="code"></i> Engineering Architecture</div>
+        <h2 class="slide-title">Technology Stack & Security</h2>
+        <p class="slide-subtitle">Modern, modular, and resilient stack built for high-concurrency clinical environments.</p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Technology / Framework</th>
+                <th>Key Responsibility</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Frontend</strong></td>
+                <td>React 18, Vite, Tailwind CSS, Lucide</td>
+                <td>Reactive multi-portal UI, clinical design tokens, fast bundle load</td>
+              </tr>
+              <tr>
+                <td><strong>Backend API</strong></td>
+                <td>Node.js (ESM), Express.js</td>
+                <td>RESTful API endpoints, FHIR mapping, consent middleware</td>
+              </tr>
+              <tr>
+                <td><strong>Database</strong></td>
+                <td>MongoDB & Mongoose ODM</td>
+                <td>FHIR resource documents, audit trail, in-memory dev cluster</td>
+              </tr>
+              <tr>
+                <td><strong>Security & Auth</strong></td>
+                <td>Argon2id, Short-lived JWTs (15 min)</td>
+                <td>Cryptographic password hashing & HTTP-only refresh tokens</td>
+              </tr>
+              <tr>
+                <td><strong>Standards</strong></td>
+                <td>HL7 FHIR R4 & ABDM Protocol</td>
+                <td>National interoperability and consent specifications</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SLIDE 11: Demo Personas -->
+      <div class="slide" data-slide="11" data-notes="Our platform comes with a fully seeded clinical ecosystem. You can log in as Arjun Kumar to see an active timeline, log in as Dr. Sharma to verify kiosk intake, test the multilingual kiosk check-in, or trigger an emergency break-glass event on Ramesh Singh's record with instant audit tracking.">
+        <div class="slide-tag"><i data-lucide="users"></i> Ready-to-Test Personas</div>
+        <h2 class="slide-title">Comprehensive Demo Ecosystem</h2>
+        <p class="slide-subtitle">Pre-seeded realistic clinical personas for end-to-end evaluation. Standard password: <code>Demo@1234</code></p>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon" style="background: rgba(37, 99, 235, 0.2); color: var(--primary-light);"><i data-lucide="user"></i></div>
+            <h4 class="card-title">Arjun Kumar (Patient)</h4>
+            <p class="card-desc"><code>arjun.kumar@example.com</code></p>
+            <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 0.5rem;">Surgical history, penicillin allergy, and approved consent with Dr. Sharma.</div>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--emerald);"><i data-lucide="user-check"></i></div>
+            <h4 class="card-title">Priya Patel (Patient)</h4>
+            <p class="card-desc"><code>priya.patel@example.com</code></p>
+            <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 0.5rem;">Thyroid condition with pending 24-hour consent request from Dr. Mehta.</div>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(239, 68, 68, 0.2); color: var(--rose);"><i data-lucide="alert-octagon"></i></div>
+            <h4 class="card-title">Ramesh Singh (Patient)</h4>
+            <p class="card-desc"><code>ramesh.singh@example.com</code></p>
+            <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 0.5rem;">Diabetic history used for testing the Emergency Break-Glass override.</div>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(14, 165, 233, 0.2); color: var(--accent);"><i data-lucide="stethoscope"></i></div>
+            <h4 class="card-title">Dr. Rajesh Sharma (Doctor)</h4>
+            <p class="card-desc"><code>dr.sharma@apollodemo.example</code></p>
+            <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 0.5rem;">General Surgeon reviewing kiosk intake briefing & verified facts.</div>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(245, 158, 11, 0.2); color: var(--amber);"><i data-lucide="heart-pulse"></i></div>
+            <h4 class="card-title">Dr. Ananya Mehta (Doctor)</h4>
+            <p class="card-desc"><code>dr.mehta@apollodemo.example</code></p>
+            <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 0.5rem;">Cardiologist creating granular, time-bound consent access requests.</div>
+          </div>
+
+          <div class="card">
+            <div class="card-icon" style="background: rgba(139, 92, 246, 0.2); color: var(--purple);"><i data-lucide="shield"></i></div>
+            <h4 class="card-title">Hospital Admin (Admin)</h4>
+            <p class="card-desc"><code>admin@healthbridge.example</code></p>
+            <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 0.5rem;">Managing 4 live kiosk terminals, throughput graphs & device tokens.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 12: Impact & Roadmap -->
+      <div class="slide" data-slide="12" data-notes="HealthBridge cuts OPD intake time by up to 60%, eliminates redundant lab testing, and places Indian patients firmly in charge of their health data. Moving forward, we are expanding our ABDM sandbox integration, WhatsApp intake bot, and automated drug-drug interaction checking. Thank you, and we welcome your questions!">
+        <div class="slide-tag"><i data-lucide="rocket"></i> Impact & Vision</div>
+        <h2 class="slide-title">Measurable Impact & Future Roadmap</h2>
+        <p class="slide-subtitle">Transforming healthcare efficiency and empowering 1.4 billion citizens.</p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3 class="card-title" style="color: var(--emerald);"><i data-lucide="trending-up"></i> Clinical & Operational Impact</h3>
+            <ul class="card-list" style="margin-top: 1rem;">
+              <li><i data-lucide="check-circle-2" style="color: var(--emerald);"></i> <strong>60% Faster OPD Intake:</strong> Pre-consultation kiosk prepares doctors before entry.</li>
+              <li><i data-lucide="check-circle-2" style="color: var(--emerald);"></i> <strong>Zero Record Fragmentation:</strong> Lifelong longitudinal history across all providers.</li>
+              <li><i data-lucide="check-circle-2" style="color: var(--emerald);"></i> <strong>Allergy & Red-Flag Safeguards:</strong> Eliminates adverse drug events and ER delays.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title" style="color: var(--accent);"><i data-lucide="milestone"></i> Next Horizon Roadmap</h3>
+            <ul class="card-list" style="margin-top: 1rem;">
+              <li><i data-lucide="arrow-right" style="color: var(--accent);"></i> <strong>ABDM Sandbox & Gateway Integration:</strong> National ABHA ID linking.</li>
+              <li><i data-lucide="arrow-right" style="color: var(--accent);"></i> <strong>WhatsApp Pre-Intake Bot:</strong> Complete intake from home before arriving at OPD.</li>
+              <li><i data-lucide="arrow-right" style="color: var(--accent);"></i> <strong>AI Drug-Drug Interaction Warning:</strong> Real-time prescription safety checks.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center; background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.3); border-radius: 12px; padding: 1rem;">
+          <strong style="color: #fff; font-size: 1.1rem;">Thank you! HealthBridge — Bridging Healthcare, Empowering Patients.</strong>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Speaker Notes Drawer -->
+  <div class="notes-drawer" id="notes-drawer">
+    <div class="notes-header">
+      <span><i data-lucide="mic"></i> SPEAKER SCRIPT FOR CURRENT SLIDE</span>
+      <button onclick="toggleNotes()" style="background: none; border: none; color: var(--text-muted); cursor: pointer;"><i data-lucide="x"></i></button>
+    </div>
+    <div class="notes-content" id="notes-content">
+      Speaker notes loading...
+    </div>
+  </div>
+
+  <!-- Footer Navigation -->
+  <footer>
+    <div class="slide-progress">
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="slide-counter" id="slide-counter">1 / 12</div>
+    </div>
+
+    <div class="nav-controls">
+      <button class="btn" onclick="prevSlide()" id="btn-prev">
+        <i data-lucide="arrow-left"></i>
+        <span>Prev</span>
+      </button>
+      <button class="btn btn-primary" onclick="nextSlide()" id="btn-next">
+        <span>Next</span>
+        <i data-lucide="arrow-right"></i>
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    let currentSlide = 1;
+    const totalSlides = document.querySelectorAll('.slide').length;
+    let notesOpen = false;
+
+    function showSlide(n) {
+      if (n < 1) n = 1;
+      if (n > totalSlides) n = totalSlides;
+      currentSlide = n;
+
+      document.querySelectorAll('.slide').forEach(slide => {
+        slide.classList.remove('active');
+      });
+
+      const activeSlide = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+      if (activeSlide) {
+        activeSlide.classList.add('active');
+        const notes = activeSlide.getAttribute('data-notes');
+        document.getElementById('notes-content').textContent = notes || "No speaker notes for this slide.";
+      }
+
+      // Update counter and progress bar
+      document.getElementById('slide-counter').textContent = `${currentSlide} / ${totalSlides}`;
+      document.getElementById('progress-bar').style.width = `${(currentSlide / totalSlides) * 100}%`;
+
+      // Disable/Enable buttons
+      document.getElementById('btn-prev').disabled = currentSlide === 1;
+      document.getElementById('btn-next').disabled = currentSlide === totalSlides;
+      
+      lucide.createIcons();
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        showSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        showSlide(currentSlide - 1);
+      }
+    }
+
+    function toggleNotes() {
+      notesOpen = !notesOpen;
+      const drawer = document.getElementById('notes-drawer');
+      if (notesOpen) {
+        drawer.classList.add('open');
+      } else {
+        drawer.classList.remove('open');
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.log(err);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key.toLowerCase() === 's') {
+        toggleNotes();
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleFullscreen();
+      }
+    });
+
+    // Initialize on load
+    showSlide(1);
+  </script>
+</body>
+</html>

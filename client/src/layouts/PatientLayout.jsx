@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import {
   LayoutDashboard, Clock, FileText, Pill, AlertTriangle, Shield, History,
-  User, Settings, LogOut, Menu, X,
+  User, Settings, LogOut, Menu, X, Landmark,
 } from 'lucide-react';
 
 const navItems = [
@@ -13,6 +13,7 @@ const navItems = [
   { to: '/patient/medications', icon: Pill, label: 'Medications' },
   { to: '/patient/allergies', icon: AlertTriangle, label: 'Allergies' },
   { to: '/patient/consents', icon: Shield, label: 'Consents' },
+  { to: '/patient/schemes', icon: Landmark, label: 'Govt. Schemes' },
   { to: '/patient/access-history', icon: History, label: 'Access History' },
   { to: '/patient/profile', icon: User, label: 'Profile' },
 ];

@@ -59,7 +59,7 @@ export default function RegisterPage() {
         <div>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" viewBox="0 0 16 16" fill="currentColor">
+              <svg className="w-4.5 h-4.5 text-white" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M8 1.5a.5.5 0 0 1 .5.5v5.5H14a.5.5 0 0 1 0 1H8.5V14a.5.5 0 0 1-1 0V8.5H2a.5.5 0 0 1 0-1h5.5V2a.5.5 0 0 1 .5-.5z"/>
               </svg>
             </div>

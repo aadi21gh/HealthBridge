@@ -18,6 +18,7 @@ import MedicationsPage from './pages/patient/MedicationsPage.jsx';
 import AllergiesPage from './pages/patient/AllergiesPage.jsx';
 import ProfilePage from './pages/patient/ProfilePage.jsx';
 import SettingsPage from './pages/patient/SettingsPage.jsx';
+import GovernmentSchemesPage from './pages/patient/GovernmentSchemesPage.jsx';
 
 // Doctor pages
 import DoctorDashboard from './pages/doctor/DoctorDashboard.jsx';
@@ -85,6 +86,14 @@ export default function App() {
               element={
                 <ProtectedRoute roles={['PATIENT']}>
                   <PatientDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/patient/schemes"
+              element={
+                <ProtectedRoute roles={['PATIENT']}>
+                  <GovernmentSchemesPage />
                 </ProtectedRoute>
               }
             />
