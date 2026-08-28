@@ -196,7 +196,6 @@ export default function LoginPage() {
               {[
                 { label: 'Patient', name: 'Arjun Kumar', email: 'arjun.kumar@example.com' },
                 { label: 'Doctor', name: 'Dr. Sharma (Surgery)', email: 'dr.sharma@apollodemo.example' },
-                { label: 'Admin', name: 'System Admin', email: 'admin@healthbridge.example' },
               ].map(({ label, name, email }) => (
                 <button
                   key={email}
